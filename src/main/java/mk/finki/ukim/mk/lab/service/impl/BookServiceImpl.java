@@ -2,6 +2,7 @@ package mk.finki.ukim.mk.lab.service.impl;
 
 import mk.finki.ukim.mk.lab.model.Author;
 import mk.finki.ukim.mk.lab.model.Book;
+import mk.finki.ukim.mk.lab.model.dto.AuthorDto;
 import mk.finki.ukim.mk.lab.model.dto.BookDto;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;
 import mk.finki.ukim.mk.lab.repository.AuthorRepository;
@@ -10,6 +11,7 @@ import mk.finki.ukim.mk.lab.service.AuthorService;
 import mk.finki.ukim.mk.lab.service.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +49,24 @@ public class BookServiceImpl implements BookService {
     public Optional<Book> findById(Long id) {
         return bookRepository.findById(id);
     }
+
+    @Override
+    public List<Book> findByTitleAndAuthor(String name, AuthorDto authorDto) {
+        List<Book> correctBooks = new ArrayList<>();
+        List<Book> books = findAll();
+        for (Book book : books) {
+            if(book.getName().equalsIgnoreCase(name)) {
+                if(authorDto.getName().equalsIgnoreCase(book.getAuthor().getName())
+                && authorDto.getSurname().equalsIgnoreCase(book.getAuthor().getSurname())
+                && authorDto.getCountryId().equals(book.getAuthor().getCountry().getId())) {
+
+                correctBooks.add(book);
+                }
+            }
+        }
+        return correctBooks;
+    }
+
 
     @Override
     public List<Book> findAll() {
