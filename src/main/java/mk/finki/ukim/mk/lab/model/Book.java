@@ -24,7 +24,9 @@ public class Book {
     @JoinColumn(name = "author_id")
     Author author;
     Integer availableCopies;
-
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")  // Matches mappedBy="user"
+//    private User user;
     public Book() {}
 
     public Book(String name, Category category, Author author, Integer availableCopies) {

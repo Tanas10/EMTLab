@@ -1,11 +1,12 @@
-package mk.finki.ukim.mk.lab.service.impl;
+package mk.finki.ukim.mk.lab.service.domain.impl;
 
 import mk.finki.ukim.mk.lab.model.Country;
-import mk.finki.ukim.mk.lab.model.dto.CountryDto;
+import mk.finki.ukim.mk.lab.dto.CreateCountryDto;
 import mk.finki.ukim.mk.lab.repository.CountryRepository;
-import mk.finki.ukim.mk.lab.service.CountryService;
+import mk.finki.ukim.mk.lab.service.domain.CountryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,23 +24,23 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Optional<Country> save(CountryDto countryDto) {
-        Country country = new Country();
-        country.setName(countryDto.getName());
-        country.setContinent(countryDto.getContinent());
+    public Optional<Country> save(Country country) {
+        Country newcountry = new Country();
+        newcountry.setName(country.getName());
+        newcountry.setContinent(country.getContinent());
 
         return Optional.of(countryRepository.save(country));
     }
 
     @Override
-    public Optional<Country> update(Long id,CountryDto countryDto) {
+    public Optional<Country> update(Long id, Country country) {
         return countryRepository.findById(id)
                 .map(existingCountry->{
                     if(existingCountry.getName()!=null){
-                        existingCountry.setName(countryDto.getName());
+                        existingCountry.setName(country.getName());
                     }
                     if(existingCountry.getContinent()!=null){
-                        existingCountry.setContinent(countryDto.getContinent());
+                        existingCountry.setContinent(country.getContinent());
                     }
             return countryRepository.save(existingCountry);
         });
@@ -53,5 +54,16 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public void deleteById(Long id) {
         countryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Country> findByName(String name) {
+        List<Country> countries = new ArrayList<Country>();
+        for (Country country : this.findAll()) {
+            if (country.getName().equals(name)) {
+                countries.add(country);
+            }
+        }
+        return countries;
     }
 }

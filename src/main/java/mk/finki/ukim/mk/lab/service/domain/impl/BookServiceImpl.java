@@ -1,14 +1,13 @@
-package mk.finki.ukim.mk.lab.service.impl;
+package mk.finki.ukim.mk.lab.service.domain.impl;
 
+import mk.finki.ukim.mk.lab.dto.DisplayAuthorDto;
 import mk.finki.ukim.mk.lab.model.Author;
 import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.model.dto.AuthorDto;
-import mk.finki.ukim.mk.lab.model.dto.BookDto;
+import mk.finki.ukim.mk.lab.dto.CreateBookDto;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;
-import mk.finki.ukim.mk.lab.repository.AuthorRepository;
 import mk.finki.ukim.mk.lab.repository.BookRepository;
-import mk.finki.ukim.mk.lab.service.AuthorService;
-import mk.finki.ukim.mk.lab.service.BookService;
+import mk.finki.ukim.mk.lab.service.domain.AuthorService;
+import mk.finki.ukim.mk.lab.service.domain.BookService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,23 +24,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> save(BookDto bookDto) {
-        Book book = new Book();
-        book.setName(bookDto.getName());
+    public Optional<Book> save(Book book) {
+        Book newbook = new Book();
+        newbook.setName(book.getName());
 
         // Parse category string to enum
         try {
-            book.setCategory(Category.valueOf(bookDto.getCategory().name()));
+            newbook.setCategory(Category.valueOf(book.getCategory().name()));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid category", e);
         }
 
-        Author author = authorService.findById(bookDto.getAuthorId())
+        Author author = authorService.findById(book.getAuthor().getId())
                 .orElseThrow(() -> new RuntimeException("Author not found"));
-        book.setAuthor(author);
-        book.setAvailableCopies(bookDto.getAvailableCopies());
+        newbook.setAuthor(author);
+        newbook.setAvailableCopies(book.getAvailableCopies());
 
-        return Optional.of(bookRepository.save(book));
+        return Optional.of(bookRepository.save(newbook));
     }
 
 
@@ -51,17 +50,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findByTitleAndAuthor(String name, AuthorDto authorDto) {
+    public List<Book> findByTitleOrAuthor(String name, Author author) {
         List<Book> correctBooks = new ArrayList<>();
         List<Book> books = findAll();
         for (Book book : books) {
-            if(book.getName().equalsIgnoreCase(name)) {
-                if(authorDto.getName().equalsIgnoreCase(book.getAuthor().getName())
-                && authorDto.getSurname().equalsIgnoreCase(book.getAuthor().getSurname())
-                && authorDto.getCountryId().equals(book.getAuthor().getCountry().getId())) {
+            if(book.getName().equalsIgnoreCase(name)||
+
+                    (author.getName().equalsIgnoreCase(book.getAuthor().getName())
+                    && author.getSurname().equalsIgnoreCase(book.getAuthor().getSurname())
+                    && author.getCountry().getName().equals(book.getAuthor().getCountry().getName()))) {
+
 
                 correctBooks.add(book);
-                }
+
             }
         }
         return correctBooks;
@@ -79,17 +80,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> update(Long id, BookDto bookDto) {
+    public Optional<Book> update(Long id, Book book) {
         return bookRepository.findById(id)
                 .map(existingBook -> {
                if(existingBook.getName() !=null)
-                   existingBook.setName(bookDto.getName());
+                   existingBook.setName(book.getName());
                if(existingBook.getCategory() != null)
-                   existingBook.setCategory(bookDto.getCategory());
+                   existingBook.setCategory(book.getCategory());
                if (existingBook.getAuthor() != null && authorService.findById(existingBook.getAuthor().getId()).isPresent())
-                   existingBook.setAuthor(authorService.findById(bookDto.getAuthorId()).get());
+                   existingBook.setAuthor(authorService.findById(book.getAuthor().getId()).get());
                if(existingBook.getAvailableCopies() != null)
-                   existingBook.setAvailableCopies(bookDto.getAvailableCopies());
+                   existingBook.setAvailableCopies(book.getAvailableCopies());
                return bookRepository.save(existingBook);
         });
     }

@@ -1,12 +1,14 @@
 package mk.finki.ukim.mk.lab.web;
 
 
-import mk.finki.ukim.mk.lab.model.Author;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import mk.finki.ukim.mk.lab.dto.*;
 import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.model.dto.AuthorDto;
-import mk.finki.ukim.mk.lab.model.dto.BookDto;
-import mk.finki.ukim.mk.lab.service.BookService;
-import mk.finki.ukim.mk.lab.service.CountryService;
+import mk.finki.ukim.mk.lab.service.application.BookApplicationService;
+import mk.finki.ukim.mk.lab.service.application.CountryApplicationService;
+import mk.finki.ukim.mk.lab.service.domain.BookService;
+import mk.finki.ukim.mk.lab.service.domain.CountryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,58 +16,64 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
+@Tag(name = "Books API", description = "Endpoints for managing books")
+
 public class BookContorler {
 
 
-    private final BookService bookService;
-    private final CountryService countryService;
-
-
-    public BookContorler(BookService bookService, CountryService countryService) {
-
-        this.bookService = bookService;
-        this.countryService = countryService;
+    private final BookApplicationService bookApplicationService;
+    private final CountryApplicationService countryApplicationService;
+    public BookContorler(BookApplicationService bookApplicationService, CountryApplicationService countryApplicationService) {
+        this.bookApplicationService = bookApplicationService;
+        this.countryApplicationService = countryApplicationService;
     }
+
 
     @GetMapping
-    public List<Book> findAll() {
-        return bookService.findAll();
+    @Operation(summary = "Get all books", description = "Retrieves a list of all available books.")
+    public List<DisplayBookDto> findAll() {
+        return bookApplicationService.findAll();
     }
+
+    @Operation(summary = "Get book by id", description = "Retrieves a book by id.")
     @GetMapping("/{id}")
-    public ResponseEntity<Book> findById(@PathVariable Long id) {
-        return bookService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DisplayBookDto> findById(@PathVariable Long id) {
+        return bookApplicationService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+    @Operation(summary = "Add a new book", description = "Creates a new book.")
     @PostMapping("/add")
-    public ResponseEntity<Book> save(@RequestBody BookDto bookDTO) {
-        return bookService.save(bookDTO)
+    public ResponseEntity<DisplayBookDto> save(@RequestBody CreateBookDto createBookDTO) {
+        return bookApplicationService.save(createBookDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @Operation(summary = "Update an existing book", description = "Updates a book by ID.")
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Book> update(@PathVariable Long id, @RequestBody BookDto bookDto) {
-        return bookService.update(id, bookDto)
+    public ResponseEntity<DisplayBookDto> update(@PathVariable Long id, @RequestBody CreateBookDto createBookDto) {
+        return bookApplicationService.update(id, createBookDto)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Delete a book", description = "Deletes a book by its ID.")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (bookService.findById(id).isPresent()) {
-            bookService.deleteById(id);
+        if (bookApplicationService.findById(id).isPresent()) {
+            bookApplicationService.deleteById(id);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
+    @Operation(summary = "Get books filtered by title and author", description = "Retrieves a list of all available books by title and author.")
     @GetMapping("/find")
-    public List<Book> findByNameAndAuthor(
+    public List<DisplayBookDto> findByNameAndAuthor(
             @RequestParam String bookname,
             @RequestParam String authorName,
             @RequestParam String authorSurname,
-            @RequestParam Long authorCountryID) {
+            @RequestParam String authorCountryName) {
 
-        AuthorDto authorDto = new AuthorDto(authorName, authorSurname,authorCountryID);
-        return bookService.findByTitleAndAuthor(bookname, authorDto);
+        CreateAuthorDto createAuthorDto = new CreateAuthorDto(authorName,authorSurname,countryApplicationService.findByName(authorCountryName).getFirst().toCountry().getId());
+        return bookApplicationService.findByTitleOrAuthor(bookname, createAuthorDto);
     }
 
 

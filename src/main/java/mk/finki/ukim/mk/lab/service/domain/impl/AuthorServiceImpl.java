@@ -1,13 +1,12 @@
-package mk.finki.ukim.mk.lab.service.impl;
+package mk.finki.ukim.mk.lab.service.domain.impl;
 
+import mk.finki.ukim.mk.lab.dto.CreateCountryDto;
 import mk.finki.ukim.mk.lab.model.Author;
 import mk.finki.ukim.mk.lab.model.Country;
-import mk.finki.ukim.mk.lab.model.dto.AuthorDto;
+import mk.finki.ukim.mk.lab.dto.CreateAuthorDto;
 import mk.finki.ukim.mk.lab.repository.AuthorRepository;
-import mk.finki.ukim.mk.lab.repository.BookRepository;
-import mk.finki.ukim.mk.lab.repository.CountryRepository;
-import mk.finki.ukim.mk.lab.service.AuthorService;
-import mk.finki.ukim.mk.lab.service.CountryService;
+import mk.finki.ukim.mk.lab.service.domain.AuthorService;
+import mk.finki.ukim.mk.lab.service.domain.CountryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,28 +30,28 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Optional<Author> save(AuthorDto authorDto) {
-        Author author = new Author();
-        author.setName(authorDto.getName());
-        author.setSurname(authorDto.getSurname());
-        Country country = countryService.findById(authorDto.getCountryId())
+    public Optional<Author> save(Author author) {
+        Author authornew = new Author();
+        authornew.setName(author.getName());
+        authornew.setSurname(author.getSurname());
+        Country country = countryService.findById(author.getCountry().getId())
                 .orElseThrow(()->new RuntimeException("Country not found"));
-        author.setCountry(country);
-        return Optional.of(authorRepository.save(author));
+        authornew.setCountry(country);
+        return Optional.of(authorRepository.save(authornew));
     }
 
     @Override
-    public Optional<Author> update(Long id ,AuthorDto authorDto) {
+    public Optional<Author> update(Long id , Author author) {
         return authorRepository.findById(id)
                 .map(existingAuthor -> {
           if(existingAuthor.getName() != null) {
-              existingAuthor.setName(authorDto.getName());
+              existingAuthor.setName(author.getName());
           }
           if(existingAuthor.getSurname() != null) {
-              existingAuthor.setSurname(authorDto.getSurname());
+              existingAuthor.setSurname(author.getSurname());
           }
           if(existingAuthor.getCountry() != null && countryService.findById(existingAuthor.getCountry().getId()).isPresent()) {
-              existingAuthor.setCountry(countryService.findById(authorDto.getCountryId()).get());
+              existingAuthor.setCountry(countryService.findById(author.getCountry().getId()).get());
           }
 
             return authorRepository.save(existingAuthor);
