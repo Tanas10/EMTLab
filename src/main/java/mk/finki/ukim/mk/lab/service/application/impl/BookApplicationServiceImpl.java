@@ -27,24 +27,24 @@ public class BookApplicationServiceImpl implements BookApplicationService {
 
     @Override
     public Optional<DisplayBookDto> save(CreateBookDto createBookDto) {
-        Optional<Author> author = authorService.findById(createBookDto.authorId());
-        return bookService.save(createBookDto.toBook(author.orElse(null))).map(DisplayBookDto::fromBook);
+        Optional<Author> author = authorService.findById(createBookDto.author());
+        return bookService.save(createBookDto.toBook(author.orElse(null))).map(DisplayBookDto::from);
     }
 
     @Override
     public Optional<DisplayBookDto> findById(Long id) {
-        return bookService.findById(id).map(DisplayBookDto::fromBook);
+        return bookService.findById(id).map(DisplayBookDto::from);
     }
 
     @Override
     public List<DisplayBookDto> findByTitleOrAuthor(String name, CreateAuthorDto createAuthorDto) {
         Optional<Country> country = countryService.findById(createAuthorDto.countryId());
-        return bookService.findByTitleOrAuthor(name,createAuthorDto.toAuthor(country.orElse(null))).stream().map(DisplayBookDto::fromBook).collect(Collectors.toList());
+        return bookService.findByTitleOrAuthor(name,createAuthorDto.toAuthor(country.orElse(null))).stream().map(DisplayBookDto::from).collect(Collectors.toList());
     }
 
     @Override
     public List<DisplayBookDto> findAll() {
-        return DisplayBookDto.fromBooks(bookService.findAll());
+        return DisplayBookDto.from(bookService.findAll());
     }
 
     @Override
@@ -54,12 +54,12 @@ public class BookApplicationServiceImpl implements BookApplicationService {
 
     @Override
     public Optional<DisplayBookDto> update(Long id, CreateBookDto createBookDto) {
-        Optional<Author> author = authorService.findById(createBookDto.authorId());
-        return bookService.update(id,createBookDto.toBook(author.orElse(null))).map(DisplayBookDto::fromBook);
+        Optional<Author> author = authorService.findById(createBookDto.author());
+        return bookService.update(id,createBookDto.toBook(author.orElse(null))).map(DisplayBookDto::from);
     }
 
     @Override
     public Optional<DisplayBookDto> changeAvailability(Long id) {
-        return bookService.changeAvailability(id).map(DisplayBookDto::fromBook);
+        return bookService.changeAvailability(id).map(DisplayBookDto::from);
     }
 }
