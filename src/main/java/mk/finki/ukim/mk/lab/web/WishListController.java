@@ -7,11 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import mk.finki.ukim.mk.lab.dto.WishListDto;
-import mk.finki.ukim.mk.lab.model.User;
+import mk.finki.ukim.mk.lab.model.domain.User;
 import mk.finki.ukim.mk.lab.service.application.WishListApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

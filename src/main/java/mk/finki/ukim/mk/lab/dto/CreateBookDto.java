@@ -1,8 +1,8 @@
 package mk.finki.ukim.mk.lab.dto;
 
 
-import mk.finki.ukim.mk.lab.model.Author;
-import mk.finki.ukim.mk.lab.model.Book;
+import mk.finki.ukim.mk.lab.model.domain.Author;
+import mk.finki.ukim.mk.lab.model.domain.Book;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;
 
 import java.util.List;

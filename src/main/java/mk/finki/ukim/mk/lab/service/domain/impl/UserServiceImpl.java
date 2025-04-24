@@ -1,6 +1,6 @@
 package mk.finki.ukim.mk.lab.service.domain.impl;
 
-import mk.finki.ukim.mk.lab.model.User;
+import mk.finki.ukim.mk.lab.model.domain.User;
 import mk.finki.ukim.mk.lab.model.enumerations.Role;
 import mk.finki.ukim.mk.lab.model.exceptions.InvalidArgumentsException;
 import mk.finki.ukim.mk.lab.model.exceptions.InvalidUsernameOrPasswordException;
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(InvalidUserCredentialsException::new);
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidUserCredentialsException();

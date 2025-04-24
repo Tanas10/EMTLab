@@ -1,4 +1,9 @@
 package mk.finki.ukim.mk.lab.model.events;
 
-public class AuthorChangedEvent {
+import org.springframework.context.ApplicationEvent;
+
+public class AuthorChangedEvent extends ApplicationEvent {
+    public AuthorChangedEvent(Object source) {
+        super(source);
+    }
 }

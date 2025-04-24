@@ -2,17 +2,16 @@ package mk.finki.ukim.mk.lab.web;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.finki.ukim.mk.lab.dto.DisplayCountryDto;
-import mk.finki.ukim.mk.lab.model.Country;
 import mk.finki.ukim.mk.lab.dto.CreateCountryDto;
 import mk.finki.ukim.mk.lab.service.application.CountryApplicationService;
-import mk.finki.ukim.mk.lab.service.domain.CountryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/countries")
 @Tag(name = "Countries API", description = "Endpoints for managing Countries")

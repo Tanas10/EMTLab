@@ -1,9 +1,8 @@
 package mk.finki.ukim.mk.lab.service.domain.impl;
 
-import mk.finki.ukim.mk.lab.dto.CreateCountryDto;
-import mk.finki.ukim.mk.lab.model.Author;
-import mk.finki.ukim.mk.lab.model.Country;
-import mk.finki.ukim.mk.lab.dto.CreateAuthorDto;
+import mk.finki.ukim.mk.lab.model.domain.Author;
+import mk.finki.ukim.mk.lab.model.domain.Country;
+import mk.finki.ukim.mk.lab.model.projections.AuthorNameProjection;
 import mk.finki.ukim.mk.lab.repository.AuthorRepository;
 import mk.finki.ukim.mk.lab.service.domain.AuthorService;
 import mk.finki.ukim.mk.lab.service.domain.CountryService;
@@ -66,5 +65,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteById(Long id) {
     authorRepository.deleteById(id);
+    }
+
+    @Override
+    public List<AuthorNameProjection> getAuthorNames() {
+        return authorRepository.findAllAuthorNames();
     }
 }

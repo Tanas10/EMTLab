@@ -1,6 +1,6 @@
 package mk.finki.ukim.mk.lab.dto;
 
-import mk.finki.ukim.mk.lab.model.Author;
+import mk.finki.ukim.mk.lab.model.domain.Author;
 
 import java.util.List;
 import java.util.stream.Collectors;

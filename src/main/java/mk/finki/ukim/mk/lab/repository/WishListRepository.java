@@ -1,7 +1,7 @@
 package mk.finki.ukim.mk.lab.repository;
 
-import mk.finki.ukim.mk.lab.model.User;
-import mk.finki.ukim.mk.lab.model.WishList;
+import mk.finki.ukim.mk.lab.model.domain.User;
+import mk.finki.ukim.mk.lab.model.domain.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

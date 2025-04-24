@@ -1,6 +1,6 @@
 package mk.finki.ukim.mk.lab.repository;
 
-import mk.finki.ukim.mk.lab.model.User;
+import mk.finki.ukim.mk.lab.model.domain.User;
 import mk.finki.ukim.mk.lab.model.enumerations.Role;
 import mk.finki.ukim.mk.lab.model.projections.UserProjection;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -19,14 +19,14 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @EntityGraph(
             type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {"carts"}
+            attributePaths = {"wishLists"}
     )
     @Query("select u from User u")
     List<User> fetchAll();
 
     @EntityGraph(
             type = EntityGraph.EntityGraphType.LOAD,
-            attributePaths = {"carts"}
+            attributePaths = {"wishLists"}
     )
     @Query("select u from User u")
     List<User> loadAll();

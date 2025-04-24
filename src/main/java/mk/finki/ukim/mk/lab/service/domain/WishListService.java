@@ -1,7 +1,7 @@
 package mk.finki.ukim.mk.lab.service.domain;
 
-import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.model.WishList;
+import mk.finki.ukim.mk.lab.model.domain.Book;
+import mk.finki.ukim.mk.lab.model.domain.WishList;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package mk.finki.ukim.mk.lab.dto;
 
-import mk.finki.ukim.mk.lab.model.WishList;
+import mk.finki.ukim.mk.lab.model.domain.WishList;
 
 import java.util.List;
 

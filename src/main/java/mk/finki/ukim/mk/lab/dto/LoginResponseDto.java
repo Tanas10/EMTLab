@@ -1,4 +1,5 @@
 package mk.finki.ukim.mk.lab.dto;
 
-public class LoginResponseDto {
+public record LoginResponseDto(String token) {
+
 }

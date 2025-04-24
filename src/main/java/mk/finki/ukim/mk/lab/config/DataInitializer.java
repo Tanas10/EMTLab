@@ -1,20 +1,23 @@
 package mk.finki.ukim.mk.lab.config;
 
 import jakarta.annotation.PostConstruct;
-import mk.finki.ukim.mk.lab.model.Author;
-import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.model.Country;
+import mk.finki.ukim.mk.lab.model.domain.Author;
+import mk.finki.ukim.mk.lab.model.domain.Book;
+import mk.finki.ukim.mk.lab.model.domain.Country;
 
-import mk.finki.ukim.mk.lab.model.User;
+import mk.finki.ukim.mk.lab.model.domain.User;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;
 import mk.finki.ukim.mk.lab.repository.AuthorRepository;
 import mk.finki.ukim.mk.lab.repository.BookRepository;
 import mk.finki.ukim.mk.lab.repository.CountryRepository;
 
 import mk.finki.ukim.mk.lab.repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import mk.finki.ukim.mk.lab.model.enumerations.Role;
+@Profile("test")
+
 @Component
 public class DataInitializer {
 

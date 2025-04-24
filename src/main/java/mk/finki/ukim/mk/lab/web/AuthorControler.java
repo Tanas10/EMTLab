@@ -4,10 +4,11 @@ package mk.finki.ukim.mk.lab.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.finki.ukim.mk.lab.dto.DisplayAuthorDto;
-import mk.finki.ukim.mk.lab.model.Author;
 import mk.finki.ukim.mk.lab.dto.CreateAuthorDto;
+import mk.finki.ukim.mk.lab.model.projections.AuthorNameProjection;
+import mk.finki.ukim.mk.lab.model.views.AuthorsPerCountryView;
+import mk.finki.ukim.mk.lab.service.AuthorsPerCountryService;
 import mk.finki.ukim.mk.lab.service.application.AuthorApplicationService;
-import mk.finki.ukim.mk.lab.service.domain.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,10 @@ public class AuthorControler {
 
 
     private final AuthorApplicationService authorApplicationService;
-
-    public AuthorControler(AuthorApplicationService authorApplicationService) {
+    private final AuthorsPerCountryService authorsPerCountryService;
+    public AuthorControler(AuthorApplicationService authorApplicationService, AuthorsPerCountryService authorsPerCountryService) {
         this.authorApplicationService = authorApplicationService;
+        this.authorsPerCountryService = authorsPerCountryService;
     }
 
 
@@ -63,5 +65,14 @@ public class AuthorControler {
     }
 
 
+    @GetMapping("/by-country")
+    public List<AuthorsPerCountryView> getAuthorsPerCountry() {
+        return authorsPerCountryService.getAuthorsPerCountry();
+    }
+
+    @GetMapping("/names")
+    public List<AuthorNameProjection> getAuthorNames() {
+        return authorApplicationService.getAuthorNames();
+    }
 
 }

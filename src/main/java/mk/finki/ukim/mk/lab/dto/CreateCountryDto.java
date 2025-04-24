@@ -1,7 +1,7 @@
 package mk.finki.ukim.mk.lab.dto;
 
 
-import mk.finki.ukim.mk.lab.model.Country;
+import mk.finki.ukim.mk.lab.model.domain.Country;
 
 import java.util.List;
 import java.util.stream.Collectors;

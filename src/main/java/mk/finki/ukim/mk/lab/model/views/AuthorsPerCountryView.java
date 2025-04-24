@@ -3,32 +3,25 @@ package mk.finki.ukim.mk.lab.model.views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.Subselect;
 
 @Entity
-@Subselect("SELECT * FROM public.books_per_country")
+@Table(name = "authors_per_country_view")
 @Immutable
-public class BookPerCountryView {
+public class AuthorsPerCountryView {
+
     @Id
     @Column(name = "country_id")
     private Long countryId;
-    @Column(name = "num_books")
-    private Integer books_num;
 
-    public Long getCountry_id() {
-        return countryId;
-    }
+    @Column(name = "country_name")
+    private String countryName;
 
-    public void setCountry_id(Long country_id) {
-        this.countryId = country_id;
-    }
+    @Column(name = "author_count")
+    private Long authorCount;
 
-    public Integer getBooks_num() {
-        return books_num;
-    }
-
-    public void setBooks_num(Integer books_num) {
-        this.books_num = books_num;
-    }
+    public Long getCountryId() { return countryId; }
+    public String getCountryName() { return countryName; }
+    public Long getAuthorCount() { return authorCount; }
 }

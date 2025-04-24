@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.model;
+package mk.finki.ukim.mk.lab.model.domain;
 
 import jakarta.persistence.*;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;

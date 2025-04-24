@@ -4,11 +4,11 @@ package mk.finki.ukim.mk.lab.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.finki.ukim.mk.lab.dto.*;
-import mk.finki.ukim.mk.lab.model.Book;
+import mk.finki.ukim.mk.lab.model.views.BooksPerAuthorView;
+import mk.finki.ukim.mk.lab.service.BooksPerAuthorService;
 import mk.finki.ukim.mk.lab.service.application.BookApplicationService;
 import mk.finki.ukim.mk.lab.service.application.CountryApplicationService;
 import mk.finki.ukim.mk.lab.service.domain.BookService;
-import mk.finki.ukim.mk.lab.service.domain.CountryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +23,11 @@ public class BookContorler {
 
     private final BookApplicationService bookApplicationService;
     private final CountryApplicationService countryApplicationService;
-    public BookContorler(BookApplicationService bookApplicationService, CountryApplicationService countryApplicationService) {
+    private final BooksPerAuthorService booksPerAuthorService;
+    public BookContorler(BookApplicationService bookApplicationService, CountryApplicationService countryApplicationService, BooksPerAuthorService booksPerAuthorService) {
         this.bookApplicationService = bookApplicationService;
         this.countryApplicationService = countryApplicationService;
+        this.booksPerAuthorService = booksPerAuthorService;
     }
 
 
@@ -75,7 +77,11 @@ public class BookContorler {
         CreateAuthorDto createAuthorDto = new CreateAuthorDto(authorName,authorSurname,countryApplicationService.findByName(authorCountryName).getFirst().toCountry().getId());
         return bookApplicationService.findByTitleOrAuthor(bookname, createAuthorDto);
     }
-
+    @GetMapping("/by-author")
+    @Operation(summary = "Get number of books by author", description = "Returns book count per author from a materialized view.")
+    public List<BooksPerAuthorView> getBooksPerAuthor() {
+        return booksPerAuthorService.getBooksPerAuthor();
+    }
 
 
 }

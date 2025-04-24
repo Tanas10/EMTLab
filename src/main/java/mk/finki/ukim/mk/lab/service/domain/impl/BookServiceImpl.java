@@ -1,13 +1,13 @@
 package mk.finki.ukim.mk.lab.service.domain.impl;
 
-import mk.finki.ukim.mk.lab.dto.DisplayAuthorDto;
-import mk.finki.ukim.mk.lab.model.Author;
-import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.dto.CreateBookDto;
+import mk.finki.ukim.mk.lab.model.domain.Author;
+import mk.finki.ukim.mk.lab.model.domain.Book;
 import mk.finki.ukim.mk.lab.model.enumerations.Category;
 import mk.finki.ukim.mk.lab.repository.BookRepository;
+import mk.finki.ukim.mk.lab.repository.views.BooksPerAuthorViewRepository;
 import mk.finki.ukim.mk.lab.service.domain.AuthorService;
 import mk.finki.ukim.mk.lab.service.domain.BookService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,29 +18,24 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorService authorService;
-    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService) {
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final BooksPerAuthorViewRepository booksPerAuthorViewRepository;
+
+    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService, ApplicationEventPublisher applicationEventPublisher, BooksPerAuthorViewRepository booksPerAuthorViewRepository) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.booksPerAuthorViewRepository = booksPerAuthorViewRepository;
     }
 
     @Override
     public Optional<Book> save(Book book) {
-        Book newbook = new Book();
-        newbook.setName(book.getName());
-
-        // Parse category string to enum
-        try {
-            newbook.setCategory(Category.valueOf(book.getCategory().name()));
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Invalid category", e);
+        Optional<Book> savedBook=Optional.empty();
+        if(book.getAuthor() != null && authorService.findById(book.getAuthor().getId()).isPresent()){
+            savedBook=Optional.of(bookRepository.save(new Book(book.getName(),book.getCategory(),authorService.findById(book.getAuthor().getId()).get(),book.getAvailableCopies(),book.isRented())));
+//            this.refreshMaterializedView();
         }
-
-        Author author = authorService.findById(book.getAuthor().getId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        newbook.setAuthor(author);
-        newbook.setAvailableCopies(book.getAvailableCopies());
-
-        return Optional.of(bookRepository.save(newbook));
+        return savedBook;
     }
 
 
@@ -81,18 +76,27 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> update(Long id, Book book) {
-        return bookRepository.findById(id)
-                .map(existingBook -> {
-               if(existingBook.getName() !=null)
-                   existingBook.setName(book.getName());
-               if(existingBook.getCategory() != null)
-                   existingBook.setCategory(book.getCategory());
-               if (existingBook.getAuthor() != null && authorService.findById(existingBook.getAuthor().getId()).isPresent())
-                   existingBook.setAuthor(authorService.findById(book.getAuthor().getId()).get());
-               if(existingBook.getAvailableCopies() != null)
-                   existingBook.setAvailableCopies(book.getAvailableCopies());
-               return bookRepository.save(existingBook);
-        });
+        return bookRepository.findById(id).map(
+                existingBook -> {
+                    if (book.getName() != null) {
+                        existingBook.setName(book.getName());
+                    }
+                    if(book.getCategory() != null){
+                        existingBook.setCategory(book.getCategory());
+                    }
+                    if(book.getAvailableCopies() != null){
+                        existingBook.setAvailableCopies(book.getAvailableCopies());
+                        existingBook.setRented(book.isRented());
+                    }
+                    if (book.getAuthor() != null &&
+                            authorService.findById(book.getAuthor().getId()).isPresent()) {
+                        existingBook.setAuthor(authorService.findById(book.getAuthor().getId()).get());
+                    }
+                    Book updatedBook=bookRepository.save(existingBook);
+//                    this.refreshMaterializedView();
+                    return updatedBook;
+                }
+        );
     }
 
 
@@ -104,4 +108,5 @@ public class BookServiceImpl implements BookService {
             return bookRepository.save(book);
         });
     }
+
 }

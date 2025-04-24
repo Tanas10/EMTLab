@@ -1,8 +1,8 @@
 package mk.finki.ukim.mk.lab.service.domain.impl;
 
-import mk.finki.ukim.mk.lab.model.Book;
-import mk.finki.ukim.mk.lab.model.User;
-import mk.finki.ukim.mk.lab.model.WishList;
+import mk.finki.ukim.mk.lab.model.domain.Book;
+import mk.finki.ukim.mk.lab.model.domain.User;
+import mk.finki.ukim.mk.lab.model.domain.WishList;
 import mk.finki.ukim.mk.lab.model.exceptions.BookAlreadyInWishListException;
 import mk.finki.ukim.mk.lab.model.exceptions.BookNotFoundException;
 import mk.finki.ukim.mk.lab.model.exceptions.WishListNotFoundException;
