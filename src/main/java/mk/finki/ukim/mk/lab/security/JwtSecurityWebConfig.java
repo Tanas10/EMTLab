@@ -66,10 +66,11 @@ public class JwtSecurityWebConfig {
                                         "/swagger-ui.html",
                                         "/v3/api-docs/**",
                                         "/**"
-                                )
-                                .hasAnyRole("USER", "ADMIN")
+                                ).permitAll()
+                             //   .hasAnyRole("USER", "ADMIN")
                                 .anyRequest()
-                                .hasRole("ADMIN")
+                                .permitAll()
+                            //    .hasRole("ADMIN")
                 )
                 .sessionManagement(sessionManagementConfigurer ->
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -38,7 +38,7 @@ public class BookApplicationServiceImpl implements BookApplicationService {
 
     @Override
     public Optional<DisplayBookDto> save(CreateBookDto book) {
-        Optional<Author> author=authorService.findById(book.author());
+        Optional<Author> author=authorService.findById(book.authorId());
         if(author.isPresent()){
             this.applicationEventPublisher.publishEvent(new BookCreatedEvent(book.toBook(author.get())));
 
@@ -71,7 +71,7 @@ public class BookApplicationServiceImpl implements BookApplicationService {
 
     @Override
     public Optional<DisplayBookDto> update(Long id, CreateBookDto createBookDto) {
-        Optional<Author> author = authorService.findById(createBookDto.author());
+        Optional<Author> author = authorService.findById(createBookDto.authorId());
         return bookService.update(id,createBookDto.toBook(author.orElse(null))).map(DisplayBookDto::from);
     }
 

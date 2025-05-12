@@ -2,8 +2,11 @@ package mk.finki.ukim.mk.lab.service.application.impl;
 
 import mk.finki.ukim.mk.lab.dto.CreateAuthorDto;
 import mk.finki.ukim.mk.lab.dto.DisplayAuthorDto;
+import mk.finki.ukim.mk.lab.dto.DisplayBookDto;
+import mk.finki.ukim.mk.lab.model.domain.Author;
 import mk.finki.ukim.mk.lab.model.domain.Country;
 import mk.finki.ukim.mk.lab.model.events.AuthorChangedEvent;
+import mk.finki.ukim.mk.lab.model.events.BookCreatedEvent;
 import mk.finki.ukim.mk.lab.model.projections.AuthorNameProjection;
 import mk.finki.ukim.mk.lab.service.application.AuthorApplicationService;
 import mk.finki.ukim.mk.lab.service.domain.AuthorService;
@@ -33,9 +36,26 @@ public class AuthorApplicationServiceImpl implements AuthorApplicationService {
     @Override
     public Optional<DisplayAuthorDto> save(CreateAuthorDto createAuthorDto) {
         Optional<Country> country = countryService.findById(createAuthorDto.countryId());
-        applicationEventPublisher.publishEvent(new AuthorChangedEvent(this));
+        if (country.isPresent()) {
+            applicationEventPublisher.publishEvent(new AuthorChangedEvent(this));
+            return authorService.save(createAuthorDto.toAuthor(country.get()))
+                    .map(DisplayAuthorDto::fromAuthor);
+        }
 
-        return authorService.save(createAuthorDto.toAuthor(country.orElse(null))).map(DisplayAuthorDto::fromAuthor);
+        return Optional.empty();
+
+
+
+//        Optional<Author> author=authorService.findById(book.authorId());
+//        if(author.isPresent()){
+//            this.applicationEventPublisher.publishEvent(new BookCreatedEvent(book.toBook(author.get())));
+//
+//            return bookService.save(book.toBook(author.get()))
+//                    .map(DisplayBookDto::from);
+//        }
+//        return Optional.empty();
+
+
     }
 
     @Override

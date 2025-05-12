@@ -5,10 +5,13 @@ import mk.finki.ukim.mk.lab.model.domain.Author;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record DisplayAuthorDto(String authorName, String authorSurname, DisplayCountryDto country) {
+public record DisplayAuthorDto(Long id,
+                               String authorName,
+                               String authorSurname,
+                               DisplayCountryDto country) {
 
     public static DisplayAuthorDto fromAuthor(Author author) {
-        return new DisplayAuthorDto(author.getName(), author.getSurname(), DisplayCountryDto.fromCountry(author.getCountry()));
+        return new DisplayAuthorDto(author.getId(), author.getName(), author.getSurname(), DisplayCountryDto.fromCountry(author.getCountry()));
     }
     public static List<DisplayAuthorDto> fromAuthors(List<Author> authors) {
         return authors.stream().map(DisplayAuthorDto::fromAuthor).collect(Collectors.toList());

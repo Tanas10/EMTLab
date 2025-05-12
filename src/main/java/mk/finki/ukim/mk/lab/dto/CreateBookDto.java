@@ -8,7 +8,14 @@ import mk.finki.ukim.mk.lab.model.enumerations.Category;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record CreateBookDto(String name, Category category, Long author, Integer availableCopies, boolean rented) {
+public record CreateBookDto(
+        String name,
+        Category category,
+        Long authorId,
+        Integer availableCopies,
+        boolean rented
+        )
+{
     public static CreateBookDto from(Book book) {
         return new CreateBookDto(
                 book.getName(),

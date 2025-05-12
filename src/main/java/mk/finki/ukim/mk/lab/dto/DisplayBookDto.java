@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 
 
-public record DisplayBookDto(Long id, String name, Category category, Long author, Integer availableCopies, boolean rented) {
+public record DisplayBookDto(Long id, String name, Category category, Long authorId, Integer availableCopies, boolean rented) {
 
 
     public static DisplayBookDto from(Book book){
